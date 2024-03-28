@@ -3,6 +3,7 @@ import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
 
 import { mockTool1 } from "@/mocks/tools";
+import { LIST_ITEM } from "@/static/constants";
 import { QueriedHTMLElement } from "@/static/types";
 
 import ToolTag, { ToolTagProps } from "./ToolTag";
@@ -19,7 +20,7 @@ describe("ToolTag", () => {
 
     it("Renders correctly", () => {
         renderToolTag({ tool: mockTool1 });
-        const tag: QueriedHTMLElement = screen.queryByRole("listitem");
+        const tag: QueriedHTMLElement = screen.queryByRole(LIST_ITEM);
         expect(tag).toHaveStyle({ backgroundColor: mockTool1.color });
         expect(tag).toHaveTextContent(mockTool1.name);
     });

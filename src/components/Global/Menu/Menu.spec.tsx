@@ -2,6 +2,7 @@ import "@testing-library/jest-dom";
 
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 
+import { BUTTON, HREF, LINK, LIST, LIST_ITEM } from "@/static/constants";
 import { QueriedHTMLElement } from "@/static/types";
 
 import Menu from "./Menu";
@@ -30,8 +31,8 @@ describe("Menu", () => {
     const renderMenu = (): void => {
         render(<Menu />);
         overlay = screen.queryByTestId("menu-overlay");
-        menu = screen.queryByRole("list");
-        button = screen.queryByRole("button");
+        menu = screen.queryByRole(LIST);
+        button = screen.queryByRole(BUTTON);
         bar = screen.queryByTestId("menu-bar");
     };
 
@@ -49,12 +50,12 @@ describe("Menu", () => {
 
     it("Navigates to other pages correctly", () => {
         renderMenu();
-        const links: HTMLElement[] = screen.queryAllByRole("link");
+        const links: HTMLElement[] = screen.queryAllByRole(LINK);
         expect(links.length).toBe(PAGES.length);
         PAGES.forEach((page: string, idx: number) => {
             expect(links[idx]).toHaveTextContent(page);
             expect(links[idx]).toHaveProperty(
-                "href",
+                HREF,
                 `http://localhost/${page.toLowerCase()}`,
             );
         });
@@ -70,7 +71,7 @@ describe("Menu", () => {
     it("Closes menu on nav click", async () => {
         renderMenu();
         fireEvent.click(button!);
-        fireEvent.click(screen.getAllByRole("listitem")[0]);
+        fireEvent.click(screen.getAllByRole(LIST_ITEM)[0]);
         await waitFor(() => assertMenuClosed());
     });
 

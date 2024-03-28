@@ -11,11 +11,37 @@ import {
     mockProject,
 } from "@/mocks/projects";
 import { mockTool1, mockTool2 } from "@/mocks/tools";
+import {
+    ALT,
+    GIT_LINK_ALT,
+    HEADING,
+    HREF,
+    IMAGE,
+    LINK,
+    LIST,
+    LIST_ITEM,
+    SITE_LINK_ALT,
+} from "@/static/constants";
 import { QueriedHTMLElement, QueriedHTMLElements } from "@/static/types";
 
 import ProjectInfo, { ProjectInfoProps } from "./ProjectInfo";
 
 describe("ProjectInfo", () => {
+    /** The number of sections required to be in the component */
+    const MIN_SECTIONS: number = 2;
+    /** The number of sections that can be in the component */
+    const MAX_SECTIONS: number = 3;
+    /** The index of the category section */
+    const CATEGORY_SECTION_IDX: number = 0;
+    /** The index of the summary section */
+    const SUMMARY_SECTION_IDX: number = 1;
+    /** The index of the tools section */
+    const TOOLS_SECTION_IDX: number = 2;
+    /** The title of the summary section */
+    const SUMMARY_TITLE: string = "Summary";
+    /** The title of the tools section */
+    const TOOLS_TITLE: string = "Tools";
+
     let images: QueriedHTMLElements;
     let headings: QueriedHTMLElements;
     let links: QueriedHTMLElements;
@@ -26,8 +52,8 @@ describe("ProjectInfo", () => {
      * Checks to see if the tools section is rendered correctly
      */
     const assertToolsSectionRenders = (): void => {
-        expect(headings.length).toBe(3);
-        expect(headings[2]).toHaveTextContent("Tools");
+        expect(headings.length).toBe(MAX_SECTIONS);
+        expect(headings[TOOLS_SECTION_IDX]).toHaveTextContent(TOOLS_TITLE);
         expect(toolsList).toBeInTheDocument();
     };
 
@@ -39,8 +65,8 @@ describe("ProjectInfo", () => {
         image: HTMLElement,
         href: string,
     ): void => {
-        expect(link).toHaveAttribute("href", href);
-        expect(image).toHaveAttribute("alt", "Git Repo");
+        expect(link).toHaveAttribute(HREF, href);
+        expect(image).toHaveAttribute(ALT, GIT_LINK_ALT);
     };
 
     /**
@@ -51,8 +77,8 @@ describe("ProjectInfo", () => {
         image: HTMLElement,
         href: string,
     ): void => {
-        expect(link).toHaveAttribute("href", href);
-        expect(image).toHaveAttribute("alt", "Site Link");
+        expect(link).toHaveAttribute(HREF, href);
+        expect(image).toHaveAttribute(ALT, SITE_LINK_ALT);
     };
 
     /**
@@ -62,21 +88,23 @@ describe("ProjectInfo", () => {
      */
     const renderProjectInfo = (props: ProjectInfoProps): void => {
         render(<ProjectInfo project={props.project} tools={props.tools} />);
-        images = screen.queryAllByRole("img");
-        headings = screen.queryAllByRole("heading");
-        links = screen.queryAllByRole("link");
-        toolsList = screen.queryByRole("list");
-        tools = screen.queryAllByRole("listitem");
+        images = screen.queryAllByRole(IMAGE);
+        headings = screen.queryAllByRole(HEADING);
+        links = screen.queryAllByRole(LINK);
+        toolsList = screen.queryByRole(LIST);
+        tools = screen.queryAllByRole(LIST_ITEM);
     };
 
     it("Renders correctly", () => {
         renderProjectInfo({ project: mockProject, tools: [mockTool1] });
-        expect(images[0]).toHaveAttribute("alt", mockProject.name);
-        expect(headings[0]).toHaveTextContent(mockProject.category);
+        expect(images[0]).toHaveAttribute(ALT, mockProject.name);
+        expect(headings[CATEGORY_SECTION_IDX]).toHaveTextContent(
+            mockProject.category,
+        );
         expect(screen.queryByTestId("project-summary")).toHaveTextContent(
             mockProject.summary,
         );
-        expect(headings[1]).toHaveTextContent("Summary");
+        expect(headings[SUMMARY_SECTION_IDX]).toHaveTextContent(SUMMARY_TITLE);
     });
 
     it("Renders the links section correctly when no links are present", () => {
@@ -117,7 +145,7 @@ describe("ProjectInfo", () => {
 
     it("Renders the tool section correctly when no tools are present", () => {
         renderProjectInfo({ project: mockNoToolsProject, tools: [] });
-        expect(headings.length).toBe(2);
+        expect(headings.length).toBe(MIN_SECTIONS);
         expect(toolsList).not.toBeInTheDocument();
         expect(tools.length).toBe(0);
     });

@@ -6,7 +6,12 @@ import {
     mockCurrentExperience,
     mockEmptyDescriptionExperience,
 } from "@/mocks/experiences";
-import { QueriedHTMLElement, QueriedHTMLElements } from "@/static/types";
+import { LIST_ITEM } from "@/static/constants";
+import {
+    Experience,
+    QueriedHTMLElement,
+    QueriedHTMLElements,
+} from "@/static/types";
 
 import ExperiencePage, { ExperiencePageProps } from "./ExperiencePage";
 
@@ -26,8 +31,21 @@ describe("ExperiencePage", () => {
         timeframe: HTMLElement,
         startDate: string,
         endDate: string,
-    ): void => {
-        expect(timeframe).toHaveTextContent(`${startDate} - ${endDate}`);
+    ): void => {};
+
+    /**
+     * Checks that the experiences render correctly
+     *
+     * @param {number} experienceList The list of experiences that were rendered
+     */
+    const assertExperiencesRender = (experienceList: Experience[]): void => {
+        expect(experiences.length).toBe(experienceList.length);
+        expect(timeframes.length).toBe(experienceList.length);
+        timeframes.forEach((timeframe: HTMLElement) =>
+            expect(timeframe).toHaveTextContent(
+                `${experienceList[0].startDate} - ${experienceList[0].endDate}`,
+            ),
+        );
     };
 
     /**
@@ -37,45 +55,30 @@ describe("ExperiencePage", () => {
      */
     const renderExperiencePage = (props: ExperiencePageProps): void => {
         render(<ExperiencePage experiences={props.experiences} />);
-        experiences = screen.queryAllByRole("listitem");
+        experiences = screen.queryAllByRole(LIST_ITEM);
         timeframes = screen.queryAllByTestId("page-timeframe");
         endpoint = screen.queryByTestId("endpoint");
     };
 
     it("Renders correctly with odd length", () => {
-        renderExperiencePage({ experiences: [mockEmptyDescriptionExperience] });
-        expect(experiences.length).toBe(1);
-        expect(timeframes.length).toBe(1);
-        assertTimeframeRenders(
-            timeframes[0],
-            mockEmptyDescriptionExperience.startDate,
-            mockEmptyDescriptionExperience.endDate,
-        );
+        const experienceList: Experience[] = [mockEmptyDescriptionExperience];
+        renderExperiencePage({ experiences: experienceList });
+        assertExperiencesRender(experienceList);
         expect(endpoint).toHaveClass("left-endpoint");
     });
 
     it("Renders correctly with even length", () => {
-        renderExperiencePage({
-            experiences: [
-                mockEmptyDescriptionExperience,
-                mockEmptyDescriptionExperience,
-            ],
-        });
-        expect(experiences.length).toBe(2);
-        expect(timeframes.length).toBe(2);
-        timeframes.forEach((timeframe: HTMLElement) =>
-            assertTimeframeRenders(
-                timeframe,
-                mockEmptyDescriptionExperience.startDate,
-                mockEmptyDescriptionExperience.endDate,
-            ),
-        );
+        const experienceList: Experience[] = [
+            mockEmptyDescriptionExperience,
+            mockEmptyDescriptionExperience,
+        ];
+        renderExperiencePage({ experiences: experienceList });
+        assertExperiencesRender(experienceList);
         expect(endpoint).toHaveClass("right-endpoint");
     });
 
     it("Timeframe strips out end date", () => {
         renderExperiencePage({ experiences: [mockCurrentExperience] });
-        expect(timeframes.length).toBe(1);
         expect(timeframes[0]).toHaveTextContent(
             mockCurrentExperience.startDate,
         );

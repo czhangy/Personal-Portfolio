@@ -4,17 +4,20 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 
 import { mockProjects } from "@/mocks/projects";
 import { mockTools } from "@/mocks/tools";
+import { BUTTON, LEFT, RIGHT } from "@/static/constants";
 import { QueriedHTMLElements } from "@/static/types";
 
 import ProjectsPage from "./ProjectsPage";
 
 describe("ProjectsPage", () => {
-    const LEFT_DOOR_IDX = 0;
-    const RIGHT_DOOR_IDX = 1;
-    const FIRST_PROJECT_IDX = 0;
-    const SECOND_PROJECT_IDX = 1;
-    const NUM_DOORS = 2;
-    const NUM_INFO_COMPONENTS = 2;
+    /** Index of the left door for a list of doors in the component */
+    const LEFT_DOOR_IDX: number = 0;
+    /** Index of the right door for a list of doors in the component */
+    const RIGHT_DOOR_IDX: number = 1;
+    /** Number of info components (modal + info) */
+    const NUM_INFO_COMPONENTS: number = 2;
+    /** Number of doors */
+    const NUM_DOORS: number = 2;
 
     let projectDoors: QueriedHTMLElements;
     let projectButtons: QueriedHTMLElements;
@@ -65,65 +68,49 @@ describe("ProjectsPage", () => {
         render(<ProjectsPage projects={mockProjects} tools={mockTools} />);
         Element.prototype.scrollTo = mockScrollTo;
         projectDoors = screen.queryAllByTestId("door");
-        projectButtons = screen.queryAllByRole("button");
+        projectButtons = screen.queryAllByRole(BUTTON);
     };
 
     it("Renders correctly", () => {
         renderProjectsPage();
         expect(projectDoors.length).toBe(NUM_DOORS);
-        expect(projectDoors[LEFT_DOOR_IDX]).toHaveClass("left");
-        expect(projectDoors[RIGHT_DOOR_IDX]).toHaveClass("right");
+        expect(projectDoors[LEFT_DOOR_IDX]).toHaveClass(LEFT);
+        expect(projectDoors[RIGHT_DOOR_IDX]).toHaveClass(RIGHT);
         expect(screen.queryByTestId("projects-menu")).toBeInTheDocument();
         assertProjectUnset();
     });
 
     it("Renders components correctly when a project is selected", async () => {
         renderProjectsPage();
-        expect(projectButtons[FIRST_PROJECT_IDX]).toHaveTextContent(
-            mockProjects[FIRST_PROJECT_IDX].name,
-        );
-        fireEvent.click(projectButtons[FIRST_PROJECT_IDX]);
-        await waitFor(() =>
-            assertProjectSet(mockProjects[FIRST_PROJECT_IDX].name),
-        );
+        expect(projectButtons[0]).toHaveTextContent(mockProjects[0].name);
+        fireEvent.click(projectButtons[0]);
+        await waitFor(() => assertProjectSet(mockProjects[0].name));
     });
 
     it("Renders components correctly when a project is unselected from the menu", async () => {
         renderProjectsPage();
-        expect(projectButtons[FIRST_PROJECT_IDX]).toHaveTextContent(
-            mockProjects[FIRST_PROJECT_IDX].name,
-        );
-        fireEvent.click(projectButtons[FIRST_PROJECT_IDX]);
-        await waitFor(() =>
-            assertProjectSet(mockProjects[FIRST_PROJECT_IDX].name),
-        );
-        fireEvent.click(projectButtons[FIRST_PROJECT_IDX]);
+        expect(projectButtons[0]).toHaveTextContent(mockProjects[0].name);
+        fireEvent.click(projectButtons[0]);
+        await waitFor(() => assertProjectSet(mockProjects[0].name));
+        fireEvent.click(projectButtons[0]);
         await waitFor(assertProjectUnset);
     });
 
     it("Renders components correctly when a project is unselected from the modal", async () => {
         renderProjectsPage();
-        expect(projectButtons[FIRST_PROJECT_IDX]).toHaveTextContent(
-            mockProjects[FIRST_PROJECT_IDX].name,
-        );
-        fireEvent.click(projectButtons[FIRST_PROJECT_IDX]);
-        await waitFor(() =>
-            assertProjectSet(mockProjects[FIRST_PROJECT_IDX].name),
-        );
+        expect(projectButtons[0]).toHaveTextContent(mockProjects[0].name);
+        fireEvent.click(projectButtons[0]);
+        await waitFor(() => assertProjectSet(mockProjects[0].name));
         fireEvent.click(screen.getByTestId("modal-overlay"));
         await waitFor(assertProjectUnset);
     });
 
     it("Renders components correctly when a different project is selected", async () => {
         renderProjectsPage();
-        expect(projectButtons[FIRST_PROJECT_IDX]).toHaveTextContent(
-            mockProjects[FIRST_PROJECT_IDX].name,
-        );
-        fireEvent.click(projectButtons[FIRST_PROJECT_IDX]);
-        await waitFor(() =>
-            assertProjectSet(mockProjects[FIRST_PROJECT_IDX].name),
-        );
-        fireEvent.click(projectButtons[SECOND_PROJECT_IDX]);
+        expect(projectButtons[0]).toHaveTextContent(mockProjects[0].name);
+        fireEvent.click(projectButtons[0]);
+        await waitFor(() => assertProjectSet(mockProjects[0].name));
+        fireEvent.click(projectButtons[1]);
         await waitFor(() => {
             expect(projectDoors[LEFT_DOOR_IDX]).toHaveClass("closed");
             expect(projectDoors[RIGHT_DOOR_IDX]).toHaveClass("closed");
@@ -131,8 +118,6 @@ describe("ProjectsPage", () => {
                 "disabled",
             );
         });
-        await waitFor(() =>
-            assertProjectSet(mockProjects[SECOND_PROJECT_IDX].name),
-        );
+        await waitFor(() => assertProjectSet(mockProjects[1].name));
     });
 });

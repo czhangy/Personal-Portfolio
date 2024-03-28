@@ -2,20 +2,23 @@ import "@testing-library/jest-dom";
 
 import { render, screen } from "@testing-library/react";
 
-import Image, { ImageProps } from "./Image";
+import { ALT, IMAGE } from "@/static/constants";
+
+import Image from "./Image";
 
 describe("Image", () => {
+    /** The text used for the test image's alt attribute */
+    const ALT_TEXT: string = "Test";
+
     /**
      * Renders the component
-     *
-     * @param {ImageProps} props Props to pass to the component
      */
-    const renderImage = (props: ImageProps): void => {
-        render(<Image src={props.src} alt={props.alt} />);
+    const renderImage = (): void => {
+        render(<Image src="/assets/images/default.webp" alt={ALT_TEXT} />);
     };
 
     it("Renders with the correct attributes", () => {
-        renderImage({ src: "/assets/images/default.webp", alt: "Test" });
-        expect(screen.queryByRole("img")).toHaveAttribute("alt", "Test");
+        renderImage();
+        expect(screen.queryByRole(IMAGE)).toHaveAttribute(ALT, ALT_TEXT);
     });
 });

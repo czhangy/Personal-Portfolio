@@ -3,6 +3,7 @@ import "@testing-library/jest-dom";
 import { fireEvent, render, screen } from "@testing-library/react";
 
 import { mockProject } from "@/mocks/projects";
+import { BUTTON, HEADING } from "@/static/constants";
 import { QueriedHTMLElement } from "@/static/types";
 
 import ProjectCard from "./ProjectCard";
@@ -22,15 +23,13 @@ describe("ProjectCard", () => {
         render(
             <ProjectCard project={mockProject} onClick={mockClickHandler} />,
         );
-        button = screen.queryByRole("button");
+        button = screen.queryByRole(BUTTON);
     };
 
     it("Renders correctly", () => {
         renderProjectCard();
         expect(button).toBeInTheDocument();
-        expect(screen.queryByRole("heading")).toHaveTextContent(
-            mockProject.name,
-        );
+        expect(screen.queryByRole(HEADING)).toHaveTextContent(mockProject.name);
     });
 
     it("Calls the click handler when clicked", () => {

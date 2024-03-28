@@ -2,6 +2,8 @@ import "@testing-library/jest-dom";
 
 import { render, screen } from "@testing-library/react";
 
+import { HREF, LINK } from "@/static/constants";
+
 import Navbar from "./Navbar";
 
 describe("Navbar", () => {
@@ -14,7 +16,7 @@ describe("Navbar", () => {
 
     it("Renders correctly", () => {
         renderNavbar();
-        expect(screen.queryAllByRole("link")[0]).toHaveAttribute("href", "/");
+        expect(screen.queryAllByRole(LINK)[0]).toHaveAttribute(HREF, "/");
         expect(screen.queryByTestId("menu")).toBeInTheDocument();
     });
 });

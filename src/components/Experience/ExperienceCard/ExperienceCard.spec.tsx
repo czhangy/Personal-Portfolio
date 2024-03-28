@@ -7,6 +7,7 @@ import {
     mockEmptyDescriptionExperience,
     mockExperience,
 } from "@/mocks/experiences";
+import { ALT, HEADING, IMAGE, LIST, LIST_ITEM } from "@/static/constants";
 import { QueriedHTMLElement, QueriedHTMLElements } from "@/static/types";
 
 import ExperienceCard, { ExperienceCardProps } from "./ExperienceCard";
@@ -22,8 +23,8 @@ describe("ExperienceCard", () => {
      * @param {string} title The job title
      */
     const assertCardRenders = (company: string, title: string): void => {
-        expect(screen.queryByRole("img")).toHaveAttribute("alt", company);
-        expect(screen.queryByRole("heading")).toHaveTextContent(company);
+        expect(screen.queryByRole(IMAGE)).toHaveAttribute(ALT, company);
+        expect(screen.queryByRole(HEADING)).toHaveTextContent(company);
         expect(screen.queryByText(title)).toBeInTheDocument();
     };
 
@@ -33,7 +34,7 @@ describe("ExperienceCard", () => {
      * @param {string[]} description The array of bullet points describing the experience
      */
     const assertDescriptionRenders = (description: string[]): void => {
-        const bullets: QueriedHTMLElements = screen.queryAllByRole("listitem");
+        const bullets: QueriedHTMLElements = screen.queryAllByRole(LIST_ITEM);
         expect(experienceDescription).toBeInTheDocument();
         expect(bullets.length).toBe(description.length);
         bullets.forEach((bullet: HTMLElement, idx: number) =>
@@ -63,7 +64,7 @@ describe("ExperienceCard", () => {
      */
     const renderExperienceCard = (props: ExperienceCardProps): void => {
         render(<ExperienceCard experience={props.experience} />);
-        experienceDescription = screen.queryByRole("list");
+        experienceDescription = screen.queryByRole(LIST);
         experienceTimeframe = screen.queryByTestId("card-timeframe");
     };
 

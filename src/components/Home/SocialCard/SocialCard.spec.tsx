@@ -2,24 +2,27 @@ import "@testing-library/jest-dom";
 
 import { render, screen } from "@testing-library/react";
 
+import {
+    GITHUB,
+    HREF,
+    INSTAGRAM,
+    LINK,
+    LINKEDIN,
+    TWITTER,
+} from "@/static/constants";
 import { QueriedHTMLElement, Social } from "@/static/types";
 
 import SocialCard, { SocialCardProps } from "./SocialCard";
 
 describe("SocialCard", () => {
-    const GITHUB = "github";
-    const LINKEDIN = "linkedin";
-    const INSTAGRAM = "instagram";
-    const TWITTER = "twitter";
-
     /**
      * Checks if the card is rendered properly
      *
      * @param {Social} social The social media the card represents
      */
     const assertCardRenders = (social: Social): void => {
-        const link: QueriedHTMLElement = screen.queryByRole("link");
-        expect(link).toHaveAttribute("href", `https://${social}.com`);
+        const link: QueriedHTMLElement = screen.queryByRole(LINK);
+        expect(link).toHaveAttribute(HREF, `https://${social}.com`);
         expect(link).toHaveClass(social);
         expect(screen.queryByAltText(social)).toBeInTheDocument();
     };

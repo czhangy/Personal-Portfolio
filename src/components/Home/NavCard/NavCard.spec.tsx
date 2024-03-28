@@ -2,6 +2,7 @@ import "@testing-library/jest-dom";
 
 import { render, screen } from "@testing-library/react";
 
+import { HEADING, HREF, LEFT, LINK, RIGHT } from "@/static/constants";
 import { QueriedHTMLElement, Side } from "@/static/types";
 
 import NavCard from "./NavCard";
@@ -16,11 +17,11 @@ describe("NavCard", () => {
      * @param {Side} side The alignment of the card being tested
      */
     const assertCardRenders = (side: Side): void => {
-        const title: QueriedHTMLElement = screen.queryByRole("heading");
+        const title: QueriedHTMLElement = screen.queryByRole(HEADING);
         expect(title).toHaveTextContent(TEST_TITLE);
         expect(title).toHaveClass(`${side}-title`);
         expect(screen.queryByAltText(TEST_TITLE)).toBeInTheDocument();
-        expect(screen.queryByRole("link")).toHaveAttribute("href", TEST_PATH);
+        expect(screen.queryByRole(LINK)).toHaveAttribute(HREF, TEST_PATH);
     };
 
     /**
@@ -31,12 +32,12 @@ describe("NavCard", () => {
     };
 
     it("Renders correctly when aligned left", () => {
-        renderNavCard("left");
-        assertCardRenders("left");
+        renderNavCard(LEFT);
+        assertCardRenders(LEFT);
     });
 
     it("Renders correctly when aligned right", () => {
-        renderNavCard("right");
-        assertCardRenders("right");
+        renderNavCard(RIGHT);
+        assertCardRenders(RIGHT);
     });
 });

@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import Image from "@/components/Global/Image/Image";
+import { COVER } from "@/static/constants";
 import { Side } from "@/static/types";
 
 import styles from "./NavCard.module.scss";
@@ -39,7 +40,7 @@ const NavCard: React.FC<NavCardProps> = (props: NavCardProps) => {
                 <Image
                     src={getBackgroundSrc()}
                     alt={props.title}
-                    objectFit="cover"
+                    objectFit={COVER}
                 />
                 <h2 className={getTitleClass()}>{props.title}</h2>
             </a>

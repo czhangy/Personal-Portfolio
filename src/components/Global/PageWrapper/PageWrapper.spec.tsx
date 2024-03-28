@@ -5,6 +5,9 @@ import { render, screen } from "@testing-library/react";
 import PageWrapper, { PageWrapperProps } from "./PageWrapper";
 
 describe("PageWrapper", () => {
+    /** The test ID used for the test child element */
+    const TEST_ID: string = "test";
+
     /**
      * Renders the component
      *
@@ -15,7 +18,7 @@ describe("PageWrapper", () => {
     };
 
     it("Renders correctly", () => {
-        renderPageWrapper({ children: <div data-testid="test"></div> });
-        expect(screen.queryByTestId("test")).toBeInTheDocument;
+        renderPageWrapper({ children: <div data-testid={TEST_ID}></div> });
+        expect(screen.queryByTestId(TEST_ID)).toBeInTheDocument;
     });
 });

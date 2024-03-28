@@ -12,7 +12,7 @@ describe("TestFile", () => {
 		render(<TestFile />);
 	};
 
-	it("Renders", () => {
+	it("Renders correctly", () => {
 		renderTestFile();
 	});
 });
